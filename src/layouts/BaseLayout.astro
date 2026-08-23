@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+import { withBase } from '../lib/urls';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = '从第一个 AI 产品，走向可验证的 Agent 工程。' } = Astro.props;
+const currentPath = Astro.url.pathname;
+const nav = [
+  { href: withBase(''), label: '起点' },
+  { href: withBase('roadmap/'), label: '学习路线' },
+  { href: withBase('projects/'), label: '项目' },
+  { href: withBase('resources/'), label: '资料台' },
+];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+    <title>{title} · Vibe Coding Field Manual</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href={withBase('')} aria-label="Vibe Coding 首页">
+        <span class="brand-mark" aria-hidden="true">VC</span>
+        <span><strong>FIELD MANUAL</strong><small>BEGINNER → AGENT ENGINEER</small></span>
+      </a>
+      <nav aria-label="主导航">
+        {nav.map((item) => <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>{item.label}</a>)}
+      </nav>
+    </header>
+    <main id="main"><slot /></main>
+    <footer>
+      <p>把每一次生成，都变成一次可解释、可验证、可交付的构建。</p>
+      <p class="mono">OPEN CURRICULUM · LOCAL-FIRST PROGRESS · 2026</p>
+    </footer>
+  </body>
+</html>

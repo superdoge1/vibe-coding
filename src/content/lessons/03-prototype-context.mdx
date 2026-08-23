@@ -1,0 +1,31 @@
+---
+id: prototype-context
+title: 用上下文驱动可测试原型
+description: 把需求拆成页面、状态和验收场景，让 AI 每次只解决一个可观察的问题。
+phase: 产品入门
+order: 3
+estimatedMinutes: 60
+prerequisites: [discover-validate]
+outcomes: [原型状态图, 三条验收场景]
+sourceLinks:
+  - { label: Easy‑Vibe 原型与 AI IDE 内容, url: https://github.com/datawhalechina/easy-vibe, kind: primary }
+---
+
+## 上下文不是聊天长度
+
+高质量上下文由五部分组成：目标用户、当前任务、已有状态、不可违反的约束、可观察的完成条件。与当前任务无关的历史越多，AI 越容易抓错重点。
+
+把原型写成状态而不是页面清单：首次进入、输入中、处理中、成功、空结果、失败。每次要求 AI 只完成一个状态及其转换，再实际点击验证。
+
+```text
+Given 用户还没有数据
+When 点击“生成”
+Then 不发送请求，并在输入框附近说明需要什么
+```
+
+## 本节任务
+
+1. 画出不超过六个节点的状态图。
+2. 为正常、空输入、服务失败各写一条 Given/When/Then。
+3. 每次改动只允许一个目标；完成后让 AI 总结变更文件与验证方式。
+4. 邀请一位未参与设计的人完成核心任务，记录卡住的位置。

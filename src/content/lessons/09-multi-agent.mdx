@@ -1,0 +1,26 @@
+---
+id: multi-agent
+title: 设计多 Agent 协作边界
+description: 用依赖图、交付契约和两阶段评审并行独立任务，而不是制造共享状态冲突。
+phase: Agent 工程
+order: 9
+estimatedMinutes: 80
+prerequisites: [single-agent]
+outcomes: [任务依赖图, 两份带契约的并行任务]
+sourceLinks:
+  - { label: Best Practice 编排工作流, url: https://github.com/shanraisshan/claude-code-best-practice/tree/main/orchestration-workflow, kind: primary }
+---
+
+## 先画依赖，再决定并行
+
+可以并行的任务必须输入明确、输出可独立检查，并且不同时修改共享核心文件。把工作画成依赖图：没有前置边的节点才进入并行队列。
+
+每个任务提供交付契约：允许读取和修改的范围、必须产出的接口、验证命令、禁止改变的行为。任务完成后先做**规格符合性评审**，再做**代码质量评审**；顺序不能颠倒。
+
+## 控制器不要重复实现
+
+协调者负责拆分、传递上下文、合并证据与处理冲突，不应一边分派一边悄悄实现同一任务。共享状态变动必须串行化。
+
+## 本节任务
+
+把一个三部分功能画成依赖图，找出真正能并行的两项。分别写交付契约，再模拟其中一项迟到或失败时控制器如何继续产生有价值进展。

@@ -1,0 +1,26 @@
+---
+id: skills-mcp
+title: 把经验封装成 Skills 与 MCP
+description: 区分临时提示词、可复用方法和外部工具，为 Agent 建立稳定能力边界。
+phase: Agent 工程
+order: 7
+estimatedMinutes: 75
+prerequisites: [delivery-loop]
+outcomes: [一个经过真实任务验证的 Skill, 一张工具权限表]
+sourceLinks:
+  - { label: Best Practice Skills 与 MCP 索引, url: https://github.com/shanraisshan/claude-code-best-practice, kind: primary }
+---
+
+## 三种能力层次
+
+临时提示词解决一次问题；Skill 封装会重复的方法与判断；MCP 暴露数据或动作。不要把所有内容做成工具：如果只是稳定的步骤，用文本 Skill 更透明；只有需要访问外部状态时才增加 MCP。
+
+一个可靠 Skill 写清触发条件、输入、输出、流程、失败边界和验证。加入一个反例：什么场景下不应使用它。然后在三次不同任务中运行，记录哪一步仍依赖隐含知识。
+
+## MCP 权限表
+
+为每个工具记录读取范围、写入范围、是否可逆、秘密来源和需要人工确认的动作。从只读数据源实验开始；工具返回的网页或文档仍是数据，不是高优先级指令。
+
+## 本节任务
+
+把你在入门项目中重复过至少三次的流程封装为 Skill。让另一个 Agent 只依据 Skill 执行，并用实际产物而不是自述评估结果。

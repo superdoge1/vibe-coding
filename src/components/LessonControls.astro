@@ -1,0 +1,77 @@
+---
+import type { LessonQuiz } from '../data/quizzes';
+interface Props { lessonId: string; lessonIds: string[]; storageKey: string; quiz: LessonQuiz; }
+const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
+---
+<aside class="lesson-controls" data-lesson-controls data-lesson-id={lessonId} data-lessons={JSON.stringify(lessonIds)} data-storage-key={storageKey} data-answers={JSON.stringify(quiz.answers)}>
+  <section>
+    <span class="eyebrow">KNOWLEDGE CHECK</span>
+    <h2>{quiz.prompt}</h2>
+    <div class="quiz-options">
+      {quiz.options.map((option) => <label><input type="checkbox" name={`quiz-${lessonId}`} value={option.value} /> <span>{option.label}</span></label>)}
+    </div>
+    <button class="button secondary" type="button" data-check-quiz>检查答案</button>
+    <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
+    <p class="explanation" hidden data-quiz-explanation>{quiz.explanation}</p>
+  </section>
+  <section>
+    <label class="note-label" for={`notes-${lessonId}`}>学习笔记 <span>仅保存在这台设备</span></label>
+    <textarea id={`notes-${lessonId}`} data-notes rows="6" placeholder="写下你的决策、疑问或下一次实验……"></textarea>
+    <p class="save-status" data-save-status aria-live="polite">尚未保存</p>
+  </section>
+  <button class="button complete" type="button" data-complete-lesson>标记本节完成</button>
+</aside>
+<script>
+  import { createEmptyProgress, parseProgress, scoreQuiz, type ProgressState } from '../lib/progress';
+  document.querySelectorAll<HTMLElement>('[data-lesson-controls]').forEach((root) => {
+    const key = root.dataset.storageKey ?? '';
+    const lessonId = root.dataset.lessonId ?? '';
+    const ids = JSON.parse(root.dataset.lessons ?? '[]') as string[];
+    const answers = JSON.parse(root.dataset.answers ?? '[]') as string[];
+    const note = root.querySelector<HTMLTextAreaElement>('[data-notes]');
+    const complete = root.querySelector<HTMLButtonElement>('[data-complete-lesson]');
+    const read = () => parseProgress(localStorage.getItem(key), ids);
+    const write = (state: ProgressState) => {
+      state.updatedAt = new Date().toISOString();
+      localStorage.setItem(key, JSON.stringify(state));
+      window.dispatchEvent(new CustomEvent('learning-progress-changed'));
+    };
+    const render = () => {
+      const state = read();
+      if (note && document.activeElement !== note) note.value = state.notes[lessonId] ?? '';
+      const done = state.completedLessonIds.includes(lessonId);
+      if (complete) {
+        complete.textContent = done ? '已完成 · 点击撤销' : '标记本节完成';
+        complete.classList.toggle('is-done', done);
+      }
+    };
+    root.querySelector('[data-check-quiz]')?.addEventListener('click', () => {
+      const selected = [...root.querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked')].map((input) => input.value);
+      const correct = scoreQuiz(selected, answers);
+      const feedback = root.querySelector<HTMLElement>('[data-quiz-feedback]');
+      const explanation = root.querySelector<HTMLElement>('[data-quiz-explanation]');
+      if (feedback) feedback.textContent = correct ? '正确。把这条原则带进下一次构建。' : '还差一步。重新检查所有选项。';
+      if (explanation) explanation.hidden = !correct;
+      const state = read();
+      state.quizScores[lessonId] = { score: correct ? 1 : 0, total: 1, answeredAt: new Date().toISOString() };
+      write(state);
+    });
+    note?.addEventListener('input', () => {
+      const state = read() ?? createEmptyProgress();
+      state.notes[lessonId] = note.value;
+      write(state);
+      const status = root.querySelector<HTMLElement>('[data-save-status]');
+      if (status) status.textContent = '已保存到本机';
+    });
+    complete?.addEventListener('click', () => {
+      const state = read();
+      state.completedLessonIds = state.completedLessonIds.includes(lessonId)
+        ? state.completedLessonIds.filter((id) => id !== lessonId)
+        : [...state.completedLessonIds, lessonId];
+      write(state);
+      render();
+    });
+    window.addEventListener('learning-progress-changed', render);
+    render();
+  });
+</script>

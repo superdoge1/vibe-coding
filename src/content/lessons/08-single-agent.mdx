@@ -1,0 +1,26 @@
+---
+id: single-agent
+title: 让单 Agent 稳定完成工程任务
+description: 通过隔离工作区、测试先行、小批次和代码评审降低自主开发的返工率。
+phase: Agent 工程
+order: 8
+estimatedMinutes: 70
+prerequisites: [skills-mcp]
+outcomes: [一次红绿测试记录, 一个可独立评审的提交]
+sourceLinks:
+  - { label: Best Practice 工作流索引, url: https://github.com/shanraisshan/claude-code-best-practice, kind: primary }
+---
+
+## 隔离比聪明更可靠
+
+让 Agent 在独立分支或 worktree 工作，先确认干净基线。一个任务只产生一个可评审结果；依赖安装、脚手架和说明文档应服务这个结果，而不是形成无意义提交。
+
+行为修改遵循红绿循环：先写一个会因缺少功能而失败的测试，观察正确失败，再写最小实现。测试如果一开始就通过，不能证明它能捕获缺陷。
+
+## 小批次评审
+
+每个批次后检查规格覆盖、错误路径、未授权改动和验证输出。Agent 的“已完成”不是证据；新鲜运行的完整命令才是证据。
+
+## 本节任务
+
+为入门项目添加一个真实的小功能。保留失败测试、通过测试和最终全量验证的输出。然后从使用者角度评审差异，至少提出一个与代码风格无关的问题。

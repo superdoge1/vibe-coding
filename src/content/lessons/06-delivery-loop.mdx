@@ -1,0 +1,26 @@
+---
+id: delivery-loop
+title: 建立 Research → Ship 交付环
+description: 用事实、规格、计划、评审和新鲜验证替代“提示一下然后祈祷”。
+phase: Agent 工程
+order: 6
+estimatedMinutes: 65
+prerequisites: [context-engineering]
+outcomes: [一份决策完备规格, 一份验证记录]
+sourceLinks:
+  - { label: Best Practice 开发工作流, url: https://github.com/shanraisshan/claude-code-best-practice, kind: primary }
+---
+
+## 五个关口
+
+**Research** 读取真实代码、官方文档和运行状态；**Plan** 锁定行为、接口、失败模式和验收；**Execute** 以最小可验证批次实现；**Review** 对照规格寻找遗漏和副作用；**Ship** 重新运行完整验证并记录证据。
+
+每一关都应产生一个可交接对象，而不是聊天中的感觉：事实清单、规格、提交、评审意见、测试输出。
+
+## 设计停止条件
+
+Agent 容易在目标模糊时继续扩张。提前写下停止条件：哪些测试通过、哪些页面可访问、哪些事情明确不做。当实施偏离时回到规格，而不是用更多提示词掩盖偏差。
+
+## 本节任务
+
+为入门项目选择一个小改动，完整走一遍五个关口。评审时故意寻找一处能“运行但不满足目标”的结果，并记录它为何没有被单元测试发现。

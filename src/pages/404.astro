@@ -1,0 +1,4 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';import {withBase} from '../lib/urls';
+---
+<BaseLayout title="路径未找到"><div class="page-shell hero"><div><span class="eyebrow">BUILD ERROR · 404</span><h1>这条路径<span>没有产物。</span></h1><p class="hero-copy">返回学习路线，选择一个可验证的下一步。</p><a class="button" href={withBase('roadmap/')}>返回学习路线</a></div></div></BaseLayout>

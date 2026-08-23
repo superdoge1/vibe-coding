@@ -1,0 +1,33 @@
+---
+id: context-engineering
+title: 为长任务设计上下文
+description: 建立项目指令、决策记录与交接包，让 Agent 在跨会话工作时不丢失关键约束。
+phase: Agent 工程
+order: 5
+estimatedMinutes: 55
+prerequisites: [fullstack-delivery]
+outcomes: [项目指令文件, 一份跨会话交接包]
+sourceLinks:
+  - { label: Claude Code Best Practice, url: https://github.com/shanraisshan/claude-code-best-practice, kind: primary }
+---
+
+## 上下文有预算
+
+把信息分成三层：长期不变的项目规则、当前功能的规格与计划、会话中的探索日志。第一层进入项目指令；第二层进入可版本化文档；第三层完成后压缩为决策和证据。
+
+项目指令只保留会改变行为的内容：构建命令、测试要求、目录边界、安全限制、文件编辑约定。不要复制整份架构说明，也不要写“保持高质量”这类不可验证要求。
+
+## 交接包模板
+
+```text
+目标与完成标准：
+已确认决策：
+当前工作树状态：
+刚运行的验证与结果：
+剩余任务及依赖：
+禁止改变的边界：
+```
+
+## 本节任务
+
+让一个新会话只读取交接包和仓库，复述下一步并指出风险。如果它需要重新询问已经确认的问题，说明上下文缺失；如果它被大量历史拖慢，说明上下文没有压缩。

@@ -1,0 +1,26 @@
+---
+id: reliability-security
+title: 为 Agent 加上可靠性与安全护栏
+description: 用最小权限、不可信输入隔离、恢复点和成本观察控制长任务风险。
+phase: Agent 工程
+order: 10
+estimatedMinutes: 75
+prerequisites: [multi-agent]
+outcomes: [Agent 风险清单, 一次失败恢复演练]
+sourceLinks:
+  - { label: Claude Code Best Practice, url: https://github.com/shanraisshan/claude-code-best-practice, kind: primary }
+---
+
+## 默认把外部内容当数据
+
+网页、Issue、日志和用户上传都可能包含提示注入。它们可以提供事实，但不能改变系统规则或扩大权限。敏感操作使用明确目标、只读预检和人工确认。
+
+秘密不进入提示词、代码、日志和截图。工具只获得完成当前任务所需的最小范围；删除、发布、付款和外部消息属于高影响动作，必须单独授权。
+
+## 让长任务可恢复
+
+在每个可验证批次后记录工作树状态、决策、测试结果和下一步。失败重试必须有上限，并区分网络暂态、权限拒绝和逻辑错误；重复同一动作不会修复错误假设。
+
+## 本节任务
+
+对入门项目做一次威胁建模：列出资产、入口、权限和不可逆动作。随后模拟上下文中断，用上一检查点在新会话恢复，并比较恢复前后的决策是否一致。

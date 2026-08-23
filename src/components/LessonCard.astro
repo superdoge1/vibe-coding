@@ -1,0 +1,14 @@
+---
+import { withBase } from '../lib/urls';
+interface Props { id: string; title: string; description: string; phase: string; order: number; estimatedMinutes: number; outcomes: string[]; }
+const { id, title, description, phase, order, estimatedMinutes, outcomes } = Astro.props;
+---
+<article class="lesson-card">
+  <div class="trace-node" aria-hidden="true"><span>{String(order).padStart(2, '0')}</span></div>
+  <div>
+    <p class="lesson-meta"><span>{phase}</span><span>{estimatedMinutes} MIN</span></p>
+    <h3><a href={withBase(`learn/${id}/`)}>{title}</a></h3>
+    <p>{description}</p>
+    <p class="outcome">产出：{outcomes[0]}</p>
+  </div>
+</article>

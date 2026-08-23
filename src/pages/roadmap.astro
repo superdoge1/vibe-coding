@@ -1,0 +1,5 @@
+---
+import {getCollection} from 'astro:content';import BaseLayout from '../layouts/BaseLayout.astro';import LessonCard from '../components/LessonCard.astro';
+const lessons=(await getCollection('lessons')).sort((a,b)=>a.data.order-b.data.order);const phases=[...new Set(lessons.map(({data})=>data.phase))];
+---
+<BaseLayout title="学习路线"><div class="page-shell"><span class="eyebrow">CURRICULUM MAP</span><div class="section-heading"><h2>三段进阶</h2><p>不要跳过交付证据。每一阶段的项目都会成为下一阶段的真实上下文。</p></div><div class="phase-grid">{phases.map((phase,index)=><article class="phase-card"><strong>PHASE {index+1}</strong><h2>{phase}</h2><p>{lessons.filter(({data})=>data.phase===phase).length} 节 · {lessons.filter(({data})=>data.phase===phase).reduce((sum,{data})=>sum+data.estimatedMinutes,0)} 分钟核心学习</p></article>)}</div>{phases.map((phase)=><section><div class="section-heading"><h2>{phase}</h2></div><div class="trace">{lessons.filter(({data})=>data.phase===phase).map(({data})=><LessonCard {...data}/>)}</div></section>)}</div></BaseLayout>

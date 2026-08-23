@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';import {withBase} from '../lib/urls';
+---
+<BaseLayout title="项目实验室"><div class="page-shell"><span class="eyebrow">EVIDENCE OVER CLAIMS</span><div class="section-heading"><h2>两个项目，一次升级</h2><p>第二个项目不是重新开坑，而是用 Agent 工程把第一个项目变成可重复维护的系统。</p></div><div class="project-grid">
+<article class="project-card"><span class="eyebrow">CAPSTONE 01</span><h2>AI 微产品</h2><p>围绕一个经过访谈验证的窄问题，完成原型、数据闭环和公开部署。</p><ul><li>一句话目标与非目标</li><li>3 条用户证据</li><li>可运行产品与错误路径</li><li>上线链接与反馈记录</li></ul><a class="button secondary" href={withBase('learn/fullstack-delivery/')}>进入交付课</a></article>
+<article class="project-card"><span class="eyebrow">LAB</span><h2>可复用 Skill</h2><p>把一个至少重复三次的工作流写成带输入、输出、失败条件和验证步骤的 Skill。</p><ul><li>触发边界</li><li>最小上下文</li><li>失败样例</li><li>真实任务验证</li></ul><a class="button secondary" href={withBase('learn/skills-mcp/')}>进入 Skills 课</a></article>
+<article class="project-card"><span class="eyebrow">CAPSTONE 02</span><h2>Agent-ready 仓库</h2><p>为入门项目补齐规格、计划、测试、评审与可重复部署，并完成一次跨会话交接。</p><ul><li>项目级指令</li><li>规格与实施计划</li><li>红绿测试证据</li><li>发布检查表</li></ul><a class="button" href={withBase('learn/agent-capstone/')}>开始最终项目</a></article>
+</div></div></BaseLayout>
