@@ -1,5 +1,58 @@
 import { expect, test } from '@playwright/test';
 
+test.describe('approved console design contracts', () => {
+  test('uses the exact approved nine-token palette', async ({ page }) => {
+    await page.goto('./');
+
+    const tokens = await page.locator(':root').evaluate((root) => {
+      const styles = getComputedStyle(root);
+      return Object.fromEntries([
+        ['background', '--ink'],
+        ['panel', '--panel'],
+        ['raisedPanel', '--panel-raised'],
+        ['text', '--text'],
+        ['muted', '--muted'],
+        ['signal', '--signal'],
+        ['info', '--cyan'],
+        ['agent', '--violet'],
+        ['line', '--line'],
+      ].map(([name, property]) => [name, styles.getPropertyValue(property).trim().toLowerCase()]));
+    });
+
+    expect(tokens).toEqual({
+      background: '#070a0f',
+      panel: '#0e151d',
+      raisedPanel: '#131d27',
+      text: '#f0f5f1',
+      muted: '#97aaa4',
+      signal: '#baf46d',
+      info: '#68dce5',
+      agent: '#9f91ff',
+      line: '#273440',
+    });
+  });
+
+  test('keeps lesson outcome body copy at least 16px', async ({ page }) => {
+    await page.goto('./');
+    const fontSize = await page.locator('.lesson-card .outcome').first().evaluate((element) => parseFloat(getComputedStyle(element).fontSize));
+    expect(fontSize).toBeGreaterThanOrEqual(16);
+  });
+
+  test('keeps at least 8px between desktop navigation actions', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./');
+    const gap = await page.getByRole('navigation', { name: '主导航' }).evaluate((element) => parseFloat(getComputedStyle(element).columnGap));
+    expect(gap).toBeGreaterThanOrEqual(8);
+  });
+
+  test('keeps course-card links at least 44px tall on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto('./');
+    const heights = await page.locator('.lesson-card h3 a').evaluateAll((links) => links.map((link) => link.getBoundingClientRect().height));
+    expect(Math.min(...heights)).toBeGreaterThanOrEqual(44);
+  });
+});
+
 test('agent console keeps its responsive learning contract', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.emulateMedia({ reducedMotion: 'reduce' });

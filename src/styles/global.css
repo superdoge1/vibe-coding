@@ -1,10 +1,10 @@
 :root {
   color-scheme: dark;
-  --ink:#07090d; --ink-deep:#030507; --panel:#0e1319; --panel-raised:#141b23;
-  --panel-alpha:rgba(14,19,25,.88); --track:#05080b; --text:#f2f6f0; --prose:#d0d9d3;
-  --muted:#9eaaa5; --signal:#b9f45d; --signal-soft:rgba(185,244,93,.11);
-  --cyan:#65dce8; --cyan-soft:rgba(101,220,232,.1); --violet:#a698ff;
-  --line:#2c3742; --line-bright:#43515f; --danger:#ff8e78; --max:1240px;
+  --ink:#070A0F; --ink-deep:var(--ink); --panel:#0E151D; --panel-raised:#131D27;
+  --panel-alpha:color-mix(in srgb,var(--panel) 88%,transparent); --track:var(--ink); --text:#F0F5F1; --prose:var(--text);
+  --muted:#97AAA4; --signal:#BAF46D; --signal-soft:color-mix(in srgb,var(--signal) 11%,transparent);
+  --cyan:#68DCE5; --cyan-soft:color-mix(in srgb,var(--cyan) 10%,transparent); --violet:#9F91FF;
+  --line:#273440; --line-bright:color-mix(in srgb,var(--line) 72%,var(--muted)); --max:1240px;
   --display:"Avenir Next Condensed","Arial Narrow","PingFang SC",sans-serif;
   --body:"Avenir Next","PingFang SC","Microsoft YaHei",sans-serif;
   --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
@@ -33,7 +33,7 @@ button,textarea,input{font:inherit}
 .header-status,.environment-ready,.terminal-local,.inspector-status{display:inline-flex;align-items:center;gap:.5rem}
 .header-status{color:var(--muted);font-size:.64rem;letter-spacing:.1em;white-space:nowrap}
 .header-status i,.environment-ready i,.terminal-local i,.inspector-status i{width:7px;height:7px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 4px var(--signal-soft)}
-.site-header nav{gap:.25rem}.site-header nav a{display:inline-flex;min-height:44px;align-items:center;padding:.65rem .8rem;color:var(--muted);font-size:.88rem;text-decoration:none}
+.site-header nav{gap:.5rem}.site-header nav a{display:inline-flex;min-height:44px;align-items:center;padding:.65rem .8rem;color:var(--muted);font-size:.88rem;text-decoration:none}
 .site-header nav a:hover,.site-header nav a[aria-current="page"]{background:var(--panel-raised);color:var(--text)}
 main{position:relative;z-index:1}.page-shell{width:min(calc(100% - 2rem),var(--max));margin-inline:auto;padding:4.5rem 0}.home-shell{padding-top:1.5rem}
 .environment-strip{display:grid;grid-template-columns:auto 1fr;align-items:stretch;border:1px solid var(--line);border-left:3px solid var(--signal);background:var(--panel-alpha)}
@@ -63,8 +63,8 @@ main{position:relative;z-index:1}.page-shell{width:min(calc(100% - 2rem),var(--m
 .lesson-card{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);gap:1.4rem;padding:0 0 1.2rem}.trace-node{position:relative;z-index:1;display:grid;place-items:start center;padding-top:1.4rem}
 .trace-node span{display:grid;width:44px;height:44px;place-items:center;border:1px solid var(--signal);background:var(--ink);color:var(--signal);font-family:var(--mono)}
 .lesson-card-body{position:relative;min-width:0;padding:1.4rem 8.5rem 1.8rem 0;border-top:1px solid var(--line)}.stage-index{position:absolute;top:1.45rem;right:0;color:var(--muted);font-size:.62rem;letter-spacing:.12em}
-.lesson-card h3{margin:.55rem 0;font-family:var(--display);font-size:clamp(1.65rem,3vw,2.45rem);letter-spacing:-.025em}.lesson-card h3 a{text-decoration:none}.lesson-card h3 a:hover{color:var(--signal)}
-.lesson-card p{max-width:760px;color:var(--muted);line-height:1.65}.lesson-meta{display:flex;flex-wrap:wrap;gap:.8rem;margin:0;color:var(--cyan)!important;font-size:.7rem;letter-spacing:.08em}.outcome{font-size:.88rem}.outcome::before{color:var(--signal);content:"↳ "}
+.lesson-card h3{margin:.55rem 0;font-family:var(--display);font-size:clamp(1.65rem,3vw,2.45rem);letter-spacing:-.025em}.lesson-card h3 a{display:inline-flex;min-height:44px;align-items:center;text-decoration:none}.lesson-card h3 a:hover{color:var(--signal)}
+.lesson-card p{max-width:760px;color:var(--muted);line-height:1.65}.lesson-meta{display:flex;flex-wrap:wrap;gap:.8rem;margin:0;color:var(--cyan)!important;font-size:.7rem;letter-spacing:.08em}.outcome{font-size:1rem}.outcome::before{color:var(--signal);content:"↳ "}
 .lesson-header{position:relative;margin-bottom:3.5rem;padding-bottom:2rem;border-bottom:1px solid var(--line)}.lesson-header::after{position:absolute;right:0;bottom:-1px;width:18%;height:3px;background:var(--signal);content:""}
 .lesson-header h1{max-width:950px;margin:1rem 0;font-family:var(--display);font-size:clamp(3rem,7vw,7rem);letter-spacing:-.065em;line-height:.92}.lesson-header .lead{max-width:760px;color:var(--muted);font-size:1.16rem;line-height:1.7}
 .lesson-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;align-items:start;gap:clamp(2.5rem,6vw,5rem)}.lesson-prose{min-width:0}.lesson-prose>:first-child{margin-top:0}
