@@ -3,23 +3,23 @@ import type { LessonQuiz } from '../data/quizzes';
 interface Props { lessonId: string; lessonIds: string[]; storageKey: string; quiz: LessonQuiz; }
 const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
 ---
-<aside class="lesson-controls" data-lesson-controls data-lesson-id={lessonId} data-lessons={JSON.stringify(lessonIds)} data-storage-key={storageKey} data-answers={JSON.stringify(quiz.answers)}>
+<aside class="lesson-controls" data-lesson-controls data-lesson-id={lessonId} data-lessons={JSON.stringify(lessonIds)} data-storage-key={storageKey} data-answers={JSON.stringify(quiz.answers)} aria-busy="true">
   <section>
     <span class="eyebrow">KNOWLEDGE CHECK</span>
     <h2 id={`quiz-prompt-${lessonId}`}>{quiz.prompt}</h2>
     <div class="quiz-options" role="group" aria-labelledby={`quiz-prompt-${lessonId}`}>
-      {quiz.options.map((option) => <label><input type="checkbox" name={`quiz-${lessonId}`} value={option.value} /> <span>{option.label}</span></label>)}
+      {quiz.options.map((option) => <label><input type="checkbox" name={`quiz-${lessonId}`} value={option.value} disabled /> <span>{option.label}</span></label>)}
     </div>
-    <button class="button secondary" type="button" data-check-quiz>检查答案</button>
+    <button class="button secondary" type="button" data-check-quiz disabled>检查答案</button>
     <p class="quiz-feedback" data-quiz-feedback aria-live="polite"></p>
     <p class="explanation" hidden data-quiz-explanation>{quiz.explanation}</p>
   </section>
   <section>
     <label class="note-label" for={`notes-${lessonId}`}>学习笔记 <span>仅保存在这台设备</span></label>
-    <textarea id={`notes-${lessonId}`} data-notes rows="6" placeholder="写下你的决策、疑问或下一次实验……"></textarea>
+    <textarea id={`notes-${lessonId}`} data-notes rows="6" placeholder="写下你的决策、疑问或下一次实验……" disabled></textarea>
     <p class="save-status" data-save-status aria-live="polite">尚未保存</p>
   </section>
-  <button class="button complete" type="button" data-complete-lesson>标记本节完成</button>
+  <button class="button complete" type="button" data-complete-lesson disabled>标记本节完成</button>
 </aside>
 <script>
   import { createEmptyProgress, readStoredProgress, saveStoredProgress, scoreQuiz, type ProgressState } from '../lib/progress';
@@ -80,5 +80,10 @@ const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
     });
     window.addEventListener('learning-progress-changed', render);
     render();
+    root.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement>('input, textarea, button').forEach((control) => {
+      control.disabled = false;
+    });
+    root.dataset.ready = 'true';
+    root.removeAttribute('aria-busy');
   });
 </script>

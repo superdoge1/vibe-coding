@@ -5,6 +5,7 @@ test('learner completes a lesson and keeps progress after reload', async ({ page
   await expect(page.getByRole('heading', { name: '先做出来。 再做可靠。' })).toBeVisible();
   await page.getByRole('link', { name: '开始第一次构建' }).click();
   await expect(page.getByRole('heading', { name: '把一句想法变成第一次构建' })).toBeVisible();
+  await expect(page.locator('[data-lesson-controls]')).toHaveAttribute('data-ready', 'true');
 
   await page.getByLabel('学习笔记 仅保存在这台设备').fill('先写目标和验收，再选择技术栈。');
   await page.getByLabel('一句话目标、非目标与验收示例').check();
