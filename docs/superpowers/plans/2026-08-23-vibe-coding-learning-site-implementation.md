@@ -28,4 +28,6 @@
 ### Task 3: Deployment
 
 - [x] Add README, license, lockfile, Node version, and Pages workflow.
-- [ ] Push `main`, enable Pages, and verify the public URL.
+- [x] Push `main`, enable Pages, and verify the public URL.
+
+Deployment verified on 2026-08-24: [public site](https://superdoge1.github.io/vibe-coding/) and [successful verify/build/deploy run](https://github.com/superdoge1/vibe-coding/actions/runs/32683597062).
