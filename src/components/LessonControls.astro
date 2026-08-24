@@ -6,8 +6,8 @@ const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
 <aside class="lesson-controls" data-lesson-controls data-lesson-id={lessonId} data-lessons={JSON.stringify(lessonIds)} data-storage-key={storageKey} data-answers={JSON.stringify(quiz.answers)}>
   <section>
     <span class="eyebrow">KNOWLEDGE CHECK</span>
-    <h2>{quiz.prompt}</h2>
-    <div class="quiz-options">
+    <h2 id={`quiz-prompt-${lessonId}`}>{quiz.prompt}</h2>
+    <div class="quiz-options" role="group" aria-labelledby={`quiz-prompt-${lessonId}`}>
       {quiz.options.map((option) => <label><input type="checkbox" name={`quiz-${lessonId}`} value={option.value} /> <span>{option.label}</span></label>)}
     </div>
     <button class="button secondary" type="button" data-check-quiz>检查答案</button>
@@ -22,7 +22,7 @@ const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
   <button class="button complete" type="button" data-complete-lesson>标记本节完成</button>
 </aside>
 <script>
-  import { createEmptyProgress, parseProgress, scoreQuiz, type ProgressState } from '../lib/progress';
+  import { createEmptyProgress, readStoredProgress, saveStoredProgress, scoreQuiz, type ProgressState } from '../lib/progress';
   document.querySelectorAll<HTMLElement>('[data-lesson-controls]').forEach((root) => {
     const key = root.dataset.storageKey ?? '';
     const lessonId = root.dataset.lessonId ?? '';
@@ -30,15 +30,24 @@ const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
     const answers = JSON.parse(root.dataset.answers ?? '[]') as string[];
     const note = root.querySelector<HTMLTextAreaElement>('[data-notes]');
     const complete = root.querySelector<HTMLButtonElement>('[data-complete-lesson]');
-    const read = () => parseProgress(localStorage.getItem(key), ids);
+    const status = root.querySelector<HTMLElement>('[data-save-status]');
+    let storage: Storage | null = null;
+    try { storage = window.localStorage; } catch { /* Use this page as a volatile fallback. */ }
+    let volatileState: ProgressState | null = null;
+    const read = () => volatileState ?? (storage ? readStoredProgress(storage, key, ids) : createEmptyProgress());
     const write = (state: ProgressState) => {
       state.updatedAt = new Date().toISOString();
-      localStorage.setItem(key, JSON.stringify(state));
+      const stored = storage ? saveStoredProgress(storage, key, state) : false;
+      volatileState = stored ? null : state;
+      if (status) status.textContent = stored ? '已保存到本机' : '浏览器未能保存；本页关闭后会丢失';
       window.dispatchEvent(new CustomEvent('learning-progress-changed'));
     };
     const render = () => {
       const state = read();
-      if (note && document.activeElement !== note) note.value = state.notes[lessonId] ?? '';
+      if (note && document.activeElement !== note) {
+        note.value = state.notes[lessonId] ?? '';
+        if (status && !volatileState && Object.hasOwn(state.notes, lessonId)) status.textContent = '已保存到本机';
+      }
       const done = state.completedLessonIds.includes(lessonId);
       if (complete) {
         complete.textContent = done ? '已完成 · 点击撤销' : '标记本节完成';
@@ -57,11 +66,9 @@ const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
       write(state);
     });
     note?.addEventListener('input', () => {
-      const state = read() ?? createEmptyProgress();
+      const state = read();
       state.notes[lessonId] = note.value;
       write(state);
-      const status = root.querySelector<HTMLElement>('[data-save-status]');
-      if (status) status.textContent = '已保存到本机';
     });
     complete?.addEventListener('click', () => {
       const state = read();

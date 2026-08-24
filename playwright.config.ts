@@ -6,13 +6,13 @@ export default defineConfig({
   retries: 0,
   reporter: 'list',
   use: {
-    baseURL: 'http://127.0.0.1:4321/vibe-coding/',
+    baseURL: 'http://127.0.0.1:4431/vibe-coding/',
     trace: 'on-first-retry',
   },
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1',
-    url: 'http://127.0.0.1:4321/vibe-coding/',
-    reuseExistingServer: true,
+    command: 'npm run build && node scripts/serve-dist.mjs 4431 /vibe-coding/',
+    url: 'http://127.0.0.1:4431/vibe-coding/',
+    reuseExistingServer: false,
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },

@@ -11,12 +11,14 @@ const { lessonIds, storageKey } = Astro.props;
   <button class="text-button" type="button" data-reset-progress>重置进度</button>
 </section>
 <script>
-  import { calculateProgress, parseProgress } from '../lib/progress';
+  import { calculateProgress, clearStoredProgress, readStoredProgress } from '../lib/progress';
   document.querySelectorAll<HTMLElement>('[data-progress-panel]').forEach((panel) => {
     const key = panel.dataset.storageKey ?? '';
     const ids = JSON.parse(panel.dataset.lessons ?? '[]') as string[];
+    let storage: Storage | null = null;
+    try { storage = window.localStorage; } catch { /* Render an empty progress state. */ }
     const render = () => {
-      const state = parseProgress(localStorage.getItem(key), ids);
+      const state = storage ? readStoredProgress(storage, key, ids) : { completedLessonIds: [] };
       const value = calculateProgress(state.completedLessonIds, ids);
       const label = panel.querySelector<HTMLElement>('[data-progress-label]');
       const fill = panel.querySelector<HTMLElement>('[data-progress-fill]');
@@ -25,7 +27,7 @@ const { lessonIds, storageKey } = Astro.props;
     };
     panel.querySelector('[data-reset-progress]')?.addEventListener('click', () => {
       if (window.confirm('清除本机保存的全部课程进度、分数和笔记？')) {
-        localStorage.removeItem(key);
+        if (storage) clearStoredProgress(storage, key);
         window.dispatchEvent(new CustomEvent('learning-progress-changed'));
       }
     });

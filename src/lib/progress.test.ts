@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import {
   calculateProgress,
+  clearStoredProgress,
   createEmptyProgress,
   parseProgress,
+  readStoredProgress,
+  saveStoredProgress,
   scoreQuiz,
 } from './progress';
 
@@ -13,18 +16,47 @@ describe('parseProgress', () => {
 
   it('returns an empty v1 state for an unknown schema version', () => {
     expect(parseProgress(JSON.stringify({ version: 99 }))).toEqual(createEmptyProgress());
+    expect(parseProgress(JSON.stringify({
+      version: 1,
+      completedLessonIds: 'intro',
+      quizScores: {},
+      notes: {},
+      updatedAt: '',
+    }))).toEqual(createEmptyProgress());
+    const blockedStorage = {
+      getItem: () => { throw new DOMException('blocked', 'SecurityError'); },
+      setItem: () => { throw new DOMException('full', 'QuotaExceededError'); },
+      removeItem: () => { throw new DOMException('blocked', 'SecurityError'); },
+    };
+    expect(readStoredProgress(blockedStorage, 'progress', ['intro'])).toEqual(createEmptyProgress());
+    expect(saveStoredProgress(blockedStorage, 'progress', createEmptyProgress())).toBe(false);
+    expect(clearStoredProgress(blockedStorage, 'progress')).toBe(false);
+    expect(parseProgress(JSON.stringify({
+      version: 1,
+      completedLessonIds: [],
+      quizScores: { intro: { score: 2, total: 1, answeredAt: false } },
+      notes: {},
+      updatedAt: '',
+    }))).toEqual(createEmptyProgress());
   });
 
   it('keeps only completed lessons that still exist', () => {
     const raw = JSON.stringify({
       version: 1,
       completedLessonIds: ['intro', 'removed'],
-      quizScores: {},
-      notes: {},
+      quizScores: {
+        intro: { score: 1, total: 1, answeredAt: '2026-08-22T00:00:00.000Z' },
+        removed: { score: 1, total: 1, answeredAt: '2026-08-22T00:00:00.000Z' },
+      },
+      notes: { intro: 'keep', removed: 'drop' },
       updatedAt: '2026-08-22T00:00:00.000Z',
     });
 
-    expect(parseProgress(raw, ['intro', 'agent-workflow']).completedLessonIds).toEqual(['intro']);
+    expect(parseProgress(raw, ['intro', 'agent-workflow'])).toMatchObject({
+      completedLessonIds: ['intro'],
+      quizScores: { intro: { score: 1, total: 1, answeredAt: '2026-08-22T00:00:00.000Z' } },
+      notes: { intro: 'keep' },
+    });
   });
 });
 

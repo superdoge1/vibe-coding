@@ -15,6 +15,11 @@ test('learner completes a lesson and keeps progress after reload', async ({ page
 
   await expect(page.getByRole('button', { name: '已完成 · 点击撤销' })).toBeVisible();
   await expect(page.getByLabel('学习笔记 仅保存在这台设备')).toHaveValue('先写目标和验收，再选择技术栈。');
+  await page.evaluate(() => {
+    Storage.prototype.setItem = () => { throw new DOMException('full', 'QuotaExceededError'); };
+  });
+  await page.getByRole('button', { name: '已完成 · 点击撤销' }).click();
+  await expect(page.getByText('浏览器未能保存；本页关闭后会丢失')).toBeVisible();
 });
 
 test('base-path navigation and final project route work', async ({ page }) => {
