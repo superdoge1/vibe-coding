@@ -1,5 +1,34 @@
 import { expect, test } from '@playwright/test';
 
+test('agent console keeps its responsive learning contract', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./');
+
+  await expect(page.locator('body')).toHaveAttribute('data-interface', 'agent-console');
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
+  const primaryCta = page.getByRole('link', { name: '开始第一次构建' });
+  await expect(primaryCta).toBeVisible();
+  expect(await primaryCta.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+
+  const navigationLinks = page.getByRole('navigation', { name: '主导航' }).getByRole('link');
+  await expect(navigationLinks).toHaveCount(4);
+  for (const link of await navigationLinks.all()) {
+    expect(await link.evaluate((element) => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+  }
+
+  await expect(page.locator('[data-entrance]').first()).toHaveCSS('animation-name', 'none');
+  const percentage = page.locator('[data-progress-percentage]');
+  await expect(percentage).toHaveText('0%');
+
+  await primaryCta.click();
+  await expect(page.locator('[data-lesson-controls]')).toHaveAttribute('data-ready', 'true');
+  await page.getByRole('button', { name: '标记本节完成' }).click();
+  await page.getByRole('link', { name: 'Vibe Coding 首页' }).click();
+  await expect(percentage).toHaveText('9%');
+});
+
 test('learner completes a lesson and keeps progress after reload', async ({ page }) => {
   await page.goto('./');
   await expect(page.getByRole('heading', { name: '先做出来。 再做可靠。' })).toBeVisible();

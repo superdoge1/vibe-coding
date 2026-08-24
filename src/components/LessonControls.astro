@@ -4,6 +4,10 @@ interface Props { lessonId: string; lessonIds: string[]; storageKey: string; qui
 const { lessonId, lessonIds, storageKey, quiz } = Astro.props;
 ---
 <aside class="lesson-controls" data-lesson-controls data-lesson-id={lessonId} data-lessons={JSON.stringify(lessonIds)} data-storage-key={storageKey} data-answers={JSON.stringify(quiz.answers)} aria-busy="true">
+  <header class="inspector-header">
+    <span class="mono">LESSON INSPECTOR</span>
+    <span class="inspector-status"><i aria-hidden="true"></i> LOCAL STATE</span>
+  </header>
   <section>
     <span class="eyebrow">KNOWLEDGE CHECK</span>
     <h2 id={`quiz-prompt-${lessonId}`}>{quiz.prompt}</h2>

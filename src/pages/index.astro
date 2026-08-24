@@ -10,9 +10,17 @@ const graphErrors=validateLessonGraph(lessons.map(({data})=>({id:data.id,prerequ
 if(graphErrors.length) throw new Error(`Invalid curriculum:\n${graphErrors.join('\n')}`);
 const lessonIds=lessons.map(({data})=>data.id);
 ---
-<BaseLayout title="从 Vibe 到 Agent 工程"><div class="page-shell">
-  <section class="hero"><div><span class="eyebrow">SYSTEM READY · 11 MODULES</span><h1>先做出来。<span>再做可靠。</span></h1><p class="hero-copy">一条从零基础产品构建，到上下文工程、Skills、MCP 与多 Agent 交付的完整路径。每一节都留下可验证的产出，而不是只收藏提示词。</p><div class="hero-actions"><a class="button" href={withBase(`learn/${lessonIds[0]}/`)}>开始第一次构建</a><a class="button secondary" href={withBase('roadmap/')}>查看完整路线</a></div></div>
-  <div class="terminal" aria-label="课程执行轨迹"><div class="terminal-bar"><span>learning-pipeline.log</span><span>● LOCAL</span></div><pre><span class="info">[01]</span> idea → validated problem
+<BaseLayout title="从 Vibe 到 Agent 工程"><div class="page-shell home-shell">
+  <section class="environment-strip" aria-label="构建环境状态" data-entrance>
+    <p class="environment-ready"><i aria-hidden="true"></i><strong>ENVIRONMENT READY</strong></p>
+    <dl>
+      <div><dt>CURRICULUM</dt><dd>{lessonIds.length} MODULES</dd></div>
+      <div><dt>STATE</dt><dd>LOCAL-FIRST</dd></div>
+      <div><dt>PATH</dt><dd>BEGINNER → AGENT</dd></div>
+    </dl>
+  </section>
+  <section class="hero" data-entrance><div class="hero-statement"><span class="eyebrow">SYSTEM READY · 11 MODULES</span><h1>先做出来。<span>再做可靠。</span></h1><p class="hero-copy">一条从零基础产品构建，到上下文工程、Skills、MCP 与多 Agent 交付的完整路径。每一节都留下可验证的产出，而不是只收藏提示词。</p><div class="hero-actions"><a class="button" href={withBase(`learn/${lessonIds[0]}/`)}>开始第一次构建</a><a class="button secondary" href={withBase('roadmap/')}>查看完整路线</a></div></div>
+  <div class="terminal" aria-label="课程执行轨迹"><div class="terminal-bar"><span>learning-pipeline.log</span><span class="terminal-local"><i aria-hidden="true"></i> LOCAL</span></div><pre><span class="info">[01]</span> idea → validated problem
 <span class="info">[02]</span> prompt → working prototype
 <span class="ok">[03]</span> prototype → deployed product
 
@@ -21,5 +29,5 @@ const lessonIds=lessons.map(({data})=>data.id);
 <span class="agent">[AGENT]</span> tests observed red → green
 <span class="ok">[SHIP]</span> evidence attached_</pre></div></section>
   <ProgressPanel lessonIds={lessonIds} storageKey="vibeCodingLearningProgress.v1" />
-  <section><div class="section-heading"><h2>构建轨迹</h2><p>前四节借鉴 Easy‑Vibe 的零基础产品路径；后七节把 Claude Code Best Practice 抽象为跨工具的 Agent 工程方法。</p></div><div class="trace">{lessons.map(({data})=><LessonCard {...data}/>)}</div></section>
+  <section class="build-trace" data-entrance><div class="section-heading"><h2>构建轨迹</h2><p>前四节借鉴 Easy‑Vibe 的零基础产品路径；后七节把 Claude Code Best Practice 抽象为跨工具的 Agent 工程方法。</p></div><div class="trace">{lessons.map(({data})=><LessonCard {...data}/>)}</div></section>
 </div></BaseLayout>

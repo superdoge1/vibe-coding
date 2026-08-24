@@ -5,8 +5,9 @@ const { id, title, description, phase, order, estimatedMinutes, outcomes } = Ast
 ---
 <article class="lesson-card">
   <div class="trace-node" aria-hidden="true"><span>{String(order).padStart(2, '0')}</span></div>
-  <div>
+  <div class="lesson-card-body">
     <p class="lesson-meta"><span>{phase}</span><span>{estimatedMinutes} MIN</span></p>
+    <span class="stage-index">BUILD STAGE {String(order).padStart(2, '0')}</span>
     <h3><a href={withBase(`learn/${id}/`)}>{title}</a></h3>
     <p>{description}</p>
     <p class="outcome">产出：{outcomes[0]}</p>

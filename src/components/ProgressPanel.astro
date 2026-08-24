@@ -2,12 +2,16 @@
 interface Props { lessonIds: string[]; storageKey: string; }
 const { lessonIds, storageKey } = Astro.props;
 ---
-<section class="progress-panel" data-progress-panel data-storage-key={storageKey} data-lessons={JSON.stringify(lessonIds)} aria-label="学习进度">
-  <div>
+<section class="progress-panel" data-progress-panel data-storage-key={storageKey} data-lessons={JSON.stringify(lessonIds)} aria-label="学习进度" data-entrance>
+  <div class="progress-copy">
     <span class="eyebrow">BUILD STATUS</span>
     <strong data-progress-label>0 / {lessonIds.length} 已完成</strong>
   </div>
-  <div class="progress-track" aria-hidden="true"><span data-progress-fill></span></div>
+  <strong class="progress-percentage" data-progress-percentage>0%</strong>
+  <div class="progress-meter">
+    <div class="progress-track" role="progressbar" aria-label="课程完成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-progress-fill></span></div>
+    <span class="progress-caption mono">PIPELINE COMPLETION</span>
+  </div>
   <button class="text-button" type="button" data-reset-progress>重置进度</button>
 </section>
 <script>
@@ -21,8 +25,12 @@ const { lessonIds, storageKey } = Astro.props;
       const state = storage ? readStoredProgress(storage, key, ids) : { completedLessonIds: [] };
       const value = calculateProgress(state.completedLessonIds, ids);
       const label = panel.querySelector<HTMLElement>('[data-progress-label]');
+      const percentage = panel.querySelector<HTMLElement>('[data-progress-percentage]');
+      const track = panel.querySelector<HTMLElement>('[role="progressbar"]');
       const fill = panel.querySelector<HTMLElement>('[data-progress-fill]');
-      if (label) label.textContent = `${value.completed} / ${value.total} 已完成 · ${value.percentage}%`;
+      if (label) label.textContent = `${value.completed} / ${value.total} 已完成`;
+      if (percentage) percentage.textContent = `${value.percentage}%`;
+      if (track) track.setAttribute('aria-valuenow', String(value.percentage));
       if (fill) fill.style.width = `${value.percentage}%`;
     };
     panel.querySelector('[data-reset-progress]')?.addEventListener('click', () => {
